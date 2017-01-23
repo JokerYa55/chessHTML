@@ -8,6 +8,8 @@ var board = {};
 function init() {
 
     var i;
+    var selectBoxID;
+    var selectDivID;
     console.log('init');
 
     board['a1'] = {id:'1', fig: 'lad', color: 'white'};
@@ -40,10 +42,10 @@ function init() {
         if (board[item]['color'] === 'black')
         {
             console.info('1');
-            $("#" + divID).css('background', '#fff');
+            $("#" + divID).css({'background': '#fff', 'border':'2px solid #000'});
         } else {
             console.info('2');
-            $("#" + divID).css('background', '#000');
+            $("#" + divID).css({'background' : '#000', 'border':'2px solid #fff'});
         }
     }
 
@@ -55,7 +57,8 @@ $(document).ready(
             //console.log(board);
             $("#idChessBoard td").click(function (eventObject) {
                 var keyId = eventObject.target.id + '';
-                console.info(keyId);
+                //console.info('keyID => ' + keyId);
+                selectBoxID = keyId;
                 //console.info($("#"+keyId).data());
             });
 
@@ -65,12 +68,15 @@ $(document).ready(
             divArr.click(function (eventObject) {
                 console.info(this);
                 // var keyId = eventObject.target.id + '';
-                console.group('Parent');
-                console.group(eventObject);
-                var parentItem = $(eventObject.target.id).parent();
-                console.info(parentItem.length);
-                parentItem.click();
-                console.groupEnd();
+                //console.group('Parent');
+                //console.group(eventObject.target.id);
+                var parentItem = $("#" + eventObject.target.id).parent();
+                selectDivID = eventObject.target.id;
+                console.info(parentItem);
+                parentItem.trigger('click');
+                console.info('selectBoxId = ' + selectBoxID);
+                console.info('selectDivId = ' + selectDivID);
+                //console.groupEnd();
             });
         }
 );
