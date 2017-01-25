@@ -4,48 +4,111 @@
  * and open the template in the editor.
  */
 
+
 var board = {};
+
+var selectBoxID = '';
+
+var selectDivID = '';
+var dataSource;
+
+var figureItem = {};
+
+function initDB() {
+    // Проверить на поддержку объекта localStorage
+    if (!window.localStorage) {
+        console.log('Браузер не поддерживает localStorage!');
+    }
+    return window.localStorage;
+}
+
+function newFigure(id, pos, type, color) {
+    var Item = new Object();
+    Item.id = id;
+    Item.pos = pos;
+    Item.type = type;
+    Item.color = color;
+    Item.onClick = function () {
+        console.log(this);
+    }
+    return Item;
+}
+
+function initFigure() {
+    //Заполняем массив фигур объектами
+
+    var fList = [];
+    var item = {};
+
+    item = newFigure('1', 'a1', 'lad', 'white');
+    fList.push(item);
+    item = newFigure('2', 'h1', 'lad', 'white');
+    fList.push(item);
+    item = newFigure('3', 'a8', 'lad', 'black');
+    fList.push(item);
+    item = newFigure('4', 'h8', 'lad', 'black');
+    fList.push(item);
+
+    item = newFigure('5', 'b1', 'kon', 'white');
+    fList.push(item);
+    item = newFigure('6', 'g1', 'kon', 'white');
+    fList.push(item);
+    item = newFigure('7', 'b8', 'kon', 'black');
+    fList.push(item);
+    item = newFigure('8', 'g8', 'kon', 'black');
+    fList.push(item);
+
+    item = newFigure('9', 'c1', 'of', 'white');
+    fList.push(item);
+    item = newFigure('10', 'f1', 'of', 'white');
+    fList.push(item);
+    item = newFigure('11', 'c8', 'of', 'black');
+    fList.push(item);
+    item = newFigure('12', 'f8', 'of', 'black');
+    fList.push(item);
+
+    item = newFigure('13', 'd1', 'ferz', 'white');
+    fList.push(item);
+    item = newFigure('14', 'e1', 'korol', 'white');
+    fList.push(item);
+    item = newFigure('15', 'd8', 'ferz', 'black');
+    fList.push(item);
+    item = newFigure('16', 'e8', 'korol', 'black');
+    fList.push(item);
+
+    return fList;
+}
+
 function init() {
 
+
     var i;
-    var selectBoxID = '';
-    var selectDivID;
+
     console.log('init');
 
-    board['a1'] = {id: '1', fig: 'lad', color: 'white'};
-    board['h1'] = {id: '2', fig: 'lad', color: 'white'};
-    board['a8'] = {id: '3', fig: 'lad', color: 'black'};
-    board['h8'] = {id: '4', fig: 'lad', color: 'black'};
 
-    board['b1'] = {id: '5', fig: 'kon', color: 'white'};
-    board['g1'] = {id: '6', fig: 'kon', color: 'white'};
-    board['b8'] = {id: '7', fig: 'kon', color: 'black'};
-    board['g8'] = {id: '8', fig: 'kon', color: 'black'};
+    var List = initFigure();
+    //console.log(List);
 
-    board['c1'] = {id: '9', fig: 'of', color: 'white'};
-    board['f1'] = {id: '10', fig: 'of', color: 'white'};
-    board['c8'] = {id: '11', fig: 'of', color: 'black'};
-    board['f8'] = {id: '12', fig: 'of', color: 'black'};
+    for (i = 0; i < List.length; i++) {
+        //console.log(List[i].pos);
 
-    board['d1'] = {id: '13', fig: 'ferz', color: 'white'};
-    board['e1'] = {id: '14', fig: 'korol', color: 'white'};
-    board['d8'] = {id: '15', fig: 'ferz', color: 'black'};
-    board['e8'] = {id: '16', fig: 'korol', color: 'black'};
+        var boardItem = $('#' + List[i].pos);
+        //console.info(boardItem);
 
-    for (let item in board) {
-        //console.info(board[item]['color']);
-        console.info(board[item]);
-        $("#" + item).data(board[item]);
-        var divID = "idDiv_" + board[item]['id'];
-        console.info("divID = " + divID);
-        $("#" + item).html('<div id="' + divID + '" class="idDiv"></div>');
-        if (board[item]['color'] === 'black')
-        {
-            console.info('1');
-            $("#" + divID).css({'background': '#fff', 'border': '2px solid #000'});
+        boardItem.data(List[i]);
+
+        var divID = "idDiv_" + List[i].id;
+        var divItem = $('#' + divID);
+
+        boardItem.html('<div id="' + divID + '" class="idDiv"></div>');
+
+        $('#' + divID).data(List[i]);
+
+        if (List[i].color === 'black') {
+            $('#' + divID).css({'background': '#fff', 'border': '2px solid #000'});
         } else {
-            console.info('2');
-            $("#" + divID).css({'background': '#000', 'border': '2px solid #fff'});
+            $('#' + divID).css({'background': '#000', 'border': '2px solid #fff'});
         }
     }
 
@@ -54,43 +117,37 @@ function init() {
 $(document).ready(
         function () {
             init();
-            //console.log(board);
+
+
             $("#idChessBoard td").click(function (eventObject) {
-                var keyId = eventObject.target.id + '';
-                console.info('keyID => ' + keyId);
-                selectBoxID = keyId;
-                return false;
-                //console.info($("#"+keyId).data());
-            });
+                console.log('TD click ');
 
-            var divArr = $("#idChessBoard td > div");
-            //console.info(divArr);
+                var keyID = eventObject.target.id + '';
 
-            divArr.click(function (eventObject) {
-                console.info(this);
-                // var keyId = eventObject.target.id + '';
-                //console.group('Parent');
-                //console.group(eventObject.target.id);
-                
-                var parentItem = $("#" + eventObject.target.id).parent();
-                selectDivID = eventObject.target.id;
-                //console.info(parentItem);
+                var parentItem = $('#' + keyID).parent().filter('td');
 
-                console.info('selectBoxId = ' + selectBoxID);
-                // Возвращаем старое значение фона для ранее выделеной ячейки
-                if (selectBoxID !== '')
-                {
-                    $('#' + selectBoxID).css({'background-color': 'blue'});
-                    
+                console.log(parentItem.length);
+                if (parentItem.length !== 0) {
+                    selectBoxID = parentItem.attr('id');
+                    selectDivID = keyID;
+                } else {
+                    selectBoxID = keyID;
                 }
 
-                parentItem.css({'background-color': 'red'});
-                parentItem.trigger('click');
-                console.info('selectBoxId = ' + selectBoxID);
-                console.info('selectDivId = ' + selectDivID);
-                
+
+                $('#' + selectBoxID).append($('#' + selectDivID));
+
+                var dataDiv = $('#' + selectDivID).data();
+                dataDiv.pos = selectBoxID;
+                $('#' + selectDivID).data(dataDiv);
+
+                console.info($('#' + selectDivID).data());
+                console.info('selectDivID = ' + selectDivID);
+                console.info('selectBoxID = ' + selectBoxID);
+
                 return false;
-                //console.groupEnd();
             });
+
+
         }
 );
