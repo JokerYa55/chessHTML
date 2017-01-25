@@ -30,7 +30,7 @@ function newFigure(id, pos, type, color) {
     Item.color = color;
     Item.onClick = function () {
         console.log(this);
-    }
+    };
     return Item;
 }
 
